@@ -16,10 +16,9 @@ TOKEN = os.environ.get("BOT_TOKEN")
 if not TOKEN:
     raise ValueError("Переменная окружения BOT_TOKEN обязательна")
 
-# Создаем приложение
+# Создаем приложение глобально
 application = Application.builder().token(TOKEN).build()
 
-# Импортируем функции из основного бота
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Отправка сообщения при команде /start"""
     welcome_text = (
@@ -75,7 +74,7 @@ class ProfileBot:
         except json.JSONDecodeError:
             print(f"Ошибка чтения {self.data_file}, создаем пустой список")
             return []
-    
+
     def format_profile(self, profile):
         """Форматирование профиля для отправки в Telegram"""
         profile_text = f"*{profile['name']}*\n\n"
@@ -128,7 +127,7 @@ class ProfileBot:
             profile_text += f"• {approach}\n"
         
         return profile_text
-    
+
     def get_general_deception_indicators(self):
         """Получение общих признаков обмана"""
         return [
@@ -144,7 +143,7 @@ class ProfileBot:
             "Избегание зрительного контакта или наоборот чрезмерное внимание",
             "Физиологические признаки стресса: потливость, дрожь, покраснение"
         ]
-    
+
     def get_deception_indicators_for_profile(self, profile):
         """Получение специфических признаков обмана для профиля"""
         name_lower = profile["name"].lower()
@@ -197,7 +196,7 @@ class ProfileBot:
                 "Создание впечатления, что события более значительны, чем они есть на самом деле"
             ],
             "шизотипическое": [
-                "Странные убеждения может быть восприняты как обман",
+                "Странные убеждения могут быть восприняты как обман",
                 "Необычное восприятие реальности, приводящее к ложным убеждениям"
             ],
             "ассистентное": [
@@ -227,7 +226,7 @@ class ProfileBot:
                 break
 
         return matched_indicators
-    
+
     def get_dialog_approaches_for_profile(self, profile):
         """Получение рекомендаций по диалогу для конкретного профиля"""
         name_lower = profile["name"].lower()
@@ -426,7 +425,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             # Если не удалось отредактировать сообщение, отправляем новое
             await query.message.reply_text('Выберите психологический профиль:', reply_markup=reply_markup)
-    
+
     elif query.data.startswith('profile_'):
         # Проверяем, является ли это хэш-идентификатором
         profile_key = query.data[8:]  # Убираем 'profile_' из начала
