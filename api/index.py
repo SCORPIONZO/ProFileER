@@ -520,6 +520,7 @@ async def handle(request):
         update = Update.de_json(body)
         
         # Обрабатываем обновление
+        # Используем уже созданное приложение
         async with application:
             await application.process_update(update)
         
