@@ -5,14 +5,19 @@
       "src": "web_app/wsgi.py",
       "use": "@vercel/python",
       "config": {
-        "runtime": "python3.12"
+        "maxLambdaSize": "250mb"
       }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/web_app/wsgi.py"
+      "dest": "web_app/wsgi.py"
     }
-  ]
+  ],
+  "functions": {
+    "web_app/wsgi.py": {
+      "includeFiles": "web_app/**/*"
+    }
+  }
 }

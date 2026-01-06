@@ -5,11 +5,13 @@ from flask import Flask, render_template, request, jsonify
 # Пытаемся импортировать из текущей директории, а если не получится - из родительской
 try:
     from settings import DATA_FILE
+    print(f"Используем настройки из локального импорта: DATA_FILE={DATA_FILE}")
 except ImportError:
     import sys
     import os
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     from settings import DATA_FILE
+    print(f"Используем настройки из родительского импорта: DATA_FILE={DATA_FILE}")
 
 
 def create_app():
@@ -17,33 +19,56 @@ def create_app():
     
     # Загрузка профилей
     def load_profiles():
+        print("=== Начинаем поиск файла профилей ===")
+        
         # Определяем возможные пути к файлу данных
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        parent_dir = os.path.dirname(current_dir)
+        
         possible_paths = [
             # Текущая директория (web_app)
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), DATA_FILE),
+            os.path.join(current_dir, DATA_FILE),
             # Родительская директория (корень проекта)
-            os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), DATA_FILE),
-            # Абсолютный путь к файлу в корне проекта
-            os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), DATA_FILE))
+            os.path.join(parent_dir, DATA_FILE),
+            # Путь в текущей директории (явно указываем)
+            os.path.join(current_dir, 'profiles.json'),
+            # Путь в родительской директории (явно указываем)
+            os.path.join(parent_dir, 'profiles.json'),
+            # Относительный путь от текущей директории
+            os.path.join('..', DATA_FILE),
         ]
         
-        for data_file_path in possible_paths:
+        print(f"Текущая директория: {current_dir}")
+        print(f"Родительская директория: {parent_dir}")
+        print(f"Ищем файл: {DATA_FILE}")
+        
+        for i, data_file_path in enumerate(possible_paths):
+            print(f"Проверяем путь {i+1}: {data_file_path}")
+            
             if os.path.exists(data_file_path):
                 try:
                     with open(data_file_path, 'r', encoding='utf-8') as f:
                         profiles = json.load(f)
-                        print(f"Загружено профилей: {len(profiles)} из файла: {data_file_path}")
+                        print(f"✓ УСПЕШНО: Загружено {len(profiles)} профилей из файла: {data_file_path}")
+                        print(f"  Первые два профиля: {[p['name'] for p in profiles[:2]]}")
                         return profiles
                 except json.JSONDecodeError as e:
-                    print(f"Ошибка чтения JSON из файла {data_file_path}: {e}")
+                    print(f"✗ ОШИБКА: Неверный формат JSON в файле {data_file_path}: {e}")
+                    continue
+                except PermissionError:
+                    print(f"✗ ОШИБКА: Нет доступа к файлу {data_file_path}")
                     continue
                 except Exception as e:
-                    print(f"Ошибка открытия файла {data_file_path}: {e}")
+                    print(f"✗ ОШИБКА: Не удалось открыть файл {data_file_path}: {str(e)}")
                     continue
+            else:
+                print(f"✗ ФАЙЛ НЕ НАЙДЕН: {data_file_path}")
         
-        # Если ни один из файлов не найден или не может быть прочитан, возвращаем примеры
-        print("Файл профилей не найден, используются встроенные примеры")
-        return [
+        print("❌ Ни один из файлов профилей не найден или не может быть прочитан.")
+        print("Используем встроенные примеры профилей...")
+        
+        # Возвращаем встроенные примеры
+        default_profiles = [
             {
                 "name": "Нарциссический тип поведения",
                 "description": "Люди с нарциссическими чертами характера обладают завышенной самооценкой, чрезмерно высоким мнением о себе и отсутствием эмпатии к другим. Они нуждаются в постоянном восхищении и одобрении.",
@@ -121,6 +146,9 @@ def create_app():
                 ]
             }
         ]
+        
+        print(f"Возвращаем {len(default_profiles)} встроенных профилей")
+        return default_profiles
 
     @app.route('/')
     def index():
