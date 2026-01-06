@@ -15,7 +15,4 @@
       "dest": "/api/index.py"
     }
   ],
-  "env": {
-    "BOT_TOKEN": "@bot_token"
-  }
 }

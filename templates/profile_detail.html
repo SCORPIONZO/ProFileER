@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile.name }} - Детали профиля</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .header {
+            background: linear-gradient(135deg, #4a86e8, #3a76d8);
+            color: white;
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+        }
+        .profile-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            border: none;
+        }
+        .section-title {
+            color: #2c3e50;
+            border-bottom: 2px solid #4a86e8;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .trait-badge, .behavior-badge, .deception-badge, .dialog-badge {
+            margin: 3px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        .trait-badge {
+            background-color: #e6f3ff;
+            color: #4a86e8;
+            border: 1px solid #4a86e8;
+        }
+        .behavior-badge {
+            background-color: #e6fffc;
+            color: #38b6b6;
+            border: 1px solid #38b6b6;
+        }
+        .deception-badge {
+            background-color: #ffe6e6;
+            color: #e84a4a;
+            border: 1px solid #e84a4a;
+        }
+        .dialog-badge {
+            background-color: #e6ffe9;
+            color: #4ace59;
+            border: 1px solid #4ace59;
+        }
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        .back-btn {
+            margin-top: 1rem;
+        }
+        .feature-icon {
+            background: linear-gradient(135deg, #4a86e8, #3a76d8);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="text-center mb-1"><i class="fas fa-user-circle me-2"></i>{{ profile.name }}</h1>
+            <p class="text-center text-light">Детали психологического профиля</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary back-btn">
+                    <i class="fas fa-arrow-left me-1"></i> Назад к списку профилей
+                </a>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card profile-card">
+                    <div class="card-body">
+                        <h2 class="section-title">Описание профиля</h2>
+                        <p class="lead">{{ profile.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card profile-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <h2 class="section-title mb-0">Черты характера</h2>
+                        </div>
+                        
+                        <div class="mt-4">
+                            {% for trait in profile.traits %}
+                            <span class="badge trait-badge">{{ trait }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card profile-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-list"></i>
+                            </div>
+                            <h2 class="section-title mb-0">Поведенческие особенности</h2>
+                        </div>
+                        
+                        <div class="mt-4">
+                            {% for behavior in profile.behaviors %}
+                            <span class="badge behavior-badge">{{ behavior }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if profile.deception_signs %}
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card profile-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <h2 class="section-title mb-0">Признаки обмана</h2>
+                        </div>
+                        
+                        <div class="mt-4">
+                            {% for sign in profile.deception_signs %}
+                            <span class="badge deception-badge">{{ sign }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if profile.dialog_recommendations %}
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card profile-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <h2 class="section-title mb-0">Рекомендации по диалогу</h2>
+                        </div>
+                        
+                        <div class="mt-4">
+                            {% for recommendation in profile.dialog_recommendations %}
+                            <span class="badge dialog-badge">{{ recommendation }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row mt-4 mb-4">
+            <div class="col-md-12 text-center">
+                <button class="btn btn-success btn-lg" onclick="exportToPDF()">
+                    <i class="fas fa-file-pdf me-2"></i>Экспортировать в PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Психология поведения</h5>
+                    <p>Обучающее приложение по профилированию и выявлению обмана</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Полезные ссылки</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url_for('index') }}" class="text-light">Главная</a></li>
+                        <li><a href="#" class="text-light">О проекте</a></li>
+                        <li><a href="#" class="text-light">Документация</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Контакты</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i> info@example.com</li>
+                        <li><i class="fab fa-github me-2"></i> GitHub</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-light">
+            <div class="text-center">
+                <p>&copy; 2026 Профили поведения. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function exportToPDF() {
+            alert('Функция экспорта в PDF будет реализована позже. В оригинальном приложении использовалась библиотека reportlab.');
+            // В реальной реализации здесь будет вызов серверного метода для генерации PDF
+        }
+    </script>
+</body>
+</html>

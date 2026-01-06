@@ -1,2 +1,5 @@
+Flask==2.3.3
 python-telegram-bot==21.0.1
 httpx
+reportlab
+PyQt6

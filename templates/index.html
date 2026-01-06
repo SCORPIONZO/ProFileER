@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Психология поведения - Обучающее приложение по профилированию</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .header {
+            background: linear-gradient(135deg, #4a86e8, #3a76d8);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .profile-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 1.5rem;
+            border: none;
+        }
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        .card-title {
+            color: #2c3e50;
+        }
+        .trait-badge {
+            background-color: #4a86e8;
+            margin: 3px;
+        }
+        .behavior-badge {
+            background-color: #38b6b6;
+            margin: 3px;
+        }
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        .nav-link {
+            font-weight: 500;
+        }
+        .search-box {
+            position: relative;
+        }
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        .search-input {
+            padding-left: 40px;
+        }
+        .profile-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .profile-link:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="text-center mb-4"><i class="fas fa-brain me-2"></i>Психология поведения</h1>
+            <p class="text-center lead">Обучающее приложение по профилированию и выявлению обмана</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-8 mx-auto">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" class="form-control form-control-lg search-input" placeholder="Поиск по профилям...">
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="mb-4">Психологические профили</h2>
+                <div id="profilesContainer">
+                    {% for profile in profiles %}
+                    <div class="col-12 profile-item">
+                        <div class="card profile-card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ profile.name }}</h5>
+                                <p class="card-text">{{ profile.description }}</p>
+                                
+                                <div class="mb-3">
+                                    <h6><i class="fas fa-heartbeat me-2"></i>Черты характера:</h6>
+                                    <div class="mt-2">
+                                        {% for trait in profile.traits %}
+                                        <span class="badge bg-primary trait-badge">{{ trait }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h6><i class="fas fa-list me-2"></i>Поведенческие особенности:</h6>
+                                    <div class="mt-2">
+                                        {% for behavior in profile.behaviors %}
+                                        <span class="badge bg-info behavior-badge">{{ behavior }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <a href="{{ url_for('profile_detail', profile_id=loop.index0) }}" class="btn btn-primary">Подробнее <i class="fas fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Психология поведения</h5>
+                    <p>Обучающее приложение по профилированию и выявлению обмана</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Полезные ссылки</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light">О проекте</a></li>
+                        <li><a href="#" class="text-light">Документация</a></li>
+                        <li><a href="#" class="text-light">GitHub</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Контакты</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i> info@example.com</li>
+                        <li><i class="fab fa-github me-2"></i> GitHub</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-light">
+            <div class="text-center">
+                <p>&copy; 2026 Профили поведения. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            const profileItems = document.querySelectorAll('.profile-item');
+            
+            profileItems.forEach(function(item) {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
