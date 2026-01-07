@@ -1,1 +1,7 @@
 Flask==2.3.3
+httpx
+aiohttp
+certifi
+reportlab
+python-telegram-bot==20.7
+pytz

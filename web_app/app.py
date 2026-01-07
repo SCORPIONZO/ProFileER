@@ -48,27 +48,22 @@ def create_app():
             if os.path.exists(data_file_path):
                 try:
                     with open(data_file_path, 'r', encoding='utf-8') as f:
-                        profiles = json.load(f)
-                        print(f"✓ УСПЕШНО: Загружено {len(profiles)} профилей из файла: {data_file_path}")
-                        print(f"  Первые два профиля: {[p['name'] for p in profiles[:2]]}")
-                        return profiles
+                        data = json.load(f)
+                        print(f"Успешно загружено {len(data)} профилей из {data_file_path}")
+                        return data
                 except json.JSONDecodeError as e:
-                    print(f"✗ ОШИБКА: Неверный формат JSON в файле {data_file_path}: {e}")
-                    continue
-                except PermissionError:
-                    print(f"✗ ОШИБКА: Нет доступа к файлу {data_file_path}")
+                    print(f"Ошибка чтения JSON из {data_file_path}: {e}")
                     continue
                 except Exception as e:
-                    print(f"✗ ОШИБКА: Не удалось открыть файл {data_file_path}: {str(e)}")
+                    print(f"Ошибка при чтении {data_file_path}: {e}")
                     continue
             else:
-                print(f"✗ ФАЙЛ НЕ НАЙДЕН: {data_file_path}")
+                print(f"Файл не найден")
         
-        print("❌ Ни один из файлов профилей не найден или не может быть прочитан.")
-        print("Используем встроенные примеры профилей...")
+        print("Файл профилей не найден, используем примеры")
         
         # Возвращаем встроенные примеры
-        default_profiles = [
+        return [
             {
                 "name": "Нарциссический тип поведения",
                 "description": "Люди с нарциссическими чертами характера обладают завышенной самооценкой, чрезмерно высоким мнением о себе и отсутствием эмпатии к другим. Они нуждаются в постоянном восхищении и одобрении.",
@@ -146,9 +141,6 @@ def create_app():
                 ]
             }
         ]
-        
-        print(f"Возвращаем {len(default_profiles)} встроенных профилей")
-        return default_profiles
 
     @app.route('/')
     def index():
